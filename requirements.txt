@@ -1,0 +1,3 @@
+googlemaps
+python-telegram-bot==6.1.0
+psycopg2
