@@ -61,13 +61,13 @@ def places(bot, update):
     print(cuisine)
     directions_result = gmaps.places_nearby(location=(lat, long), radius='3000', keyword=cuisine,
                                             type=types)
-    print(directions_result['result'])
+    print(directions_result)
 
     if len(directions_result['results']) == 0:
         update.message.reply_text('No restaurants were found! Try again!')
         return
 
-    directions_result =directions_result[:5]
+    directions_result = directions_result[:5]
 
     global List
     List = "List of restaurants:\n"
