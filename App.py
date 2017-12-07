@@ -58,15 +58,16 @@ def places(bot, update):
             return
 
     cuisine = DBqueries.find_cuisine_by_dish(update.message.text)
-    directions_result = gmaps.places_nearby(location=(lat, long), radius='3000', keyword=cuisine,
-                                            type=types)
-    if len(directions_result['results']) == 0:
+    if cuisine is None:
         directions_result = gmaps.places_nearby(location=(lat, long), radius='3000', keyword=update.message.text,
                                                 type=types)
-        print(len(directions_result['results']))
-        if len(directions_result['results']) == 0:
-            update.message.reply_text('No restaurants were found! Try again!')
-            return
+    else:
+        directions_result = gmaps.places_nearby(location=(lat, long), radius='3000', keyword=cuisine,
+                                            type=types)
+
+    if len(directions_result['results']) == 0:
+        update.message.reply_text('No restaurants were found! Try again!')
+        return
 
     global List
     List = "List of restaurants:\n"
@@ -92,6 +93,7 @@ def main():
                           url_path=token)
 
     updater.bot.set_webhook("https://uneatable.herokuapp.com/" + token)
+    # updater.start_polling()
     updater.idle()
 
 

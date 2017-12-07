@@ -52,6 +52,8 @@ def find_cuisine_by_dish(dish):
             dish) + "%';")
     cuisine = cur.fetchone()
     cur.close
+    if cuisine is None:
+        return None
     return cuisine[0] + " кухня"
 
 
