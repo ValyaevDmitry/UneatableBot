@@ -67,8 +67,6 @@ def places(bot, update):
         update.message.reply_text('No restaurants were found! Try again!')
         return
 
-    directions_result = directions_result[:5]
-
     global List
     List = "List of restaurants:\n"
     for direct in directions_result['results']:
