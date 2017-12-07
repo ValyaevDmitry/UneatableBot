@@ -63,6 +63,7 @@ def places(bot, update):
     if len(directions_result['results']) == 0:
         directions_result = gmaps.places_nearby(location=(lat, long), radius='3000', keyword=update.message.text,
                                                 type=types)
+        print(len(directions_result['results']))
         if len(directions_result['results']) == 0:
             update.message.reply_text('No restaurants were found! Try again!')
             return
