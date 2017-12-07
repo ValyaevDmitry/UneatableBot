@@ -57,13 +57,16 @@ def places(bot, update):
             update.message.reply_text('Wrong message! It is empty or you send wrong emoji! Try again!')
             return
 
-    directions_result = gmaps.places_nearby(location=(lat, long), radius='5000', keyword=update.message.text,
+    cuisine = DBqueries.find_cuisine_by_dish(update.message.text)
+    directions_result = gmaps.places_nearby(location=(lat, long), radius='3000', keyword=cuisine,
                                             type=types)
 
     if len(directions_result['results']) == 0:
         update.message.reply_text('No restaurants were found! Try again!')
         return
 
+    directions_result =directions_result[:5]
+    
     global List
     List = "List of restaurants:\n"
     for direct in directions_result['results']:

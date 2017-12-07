@@ -44,5 +44,16 @@ def select_emoji(emoji):
     return emoji
 
 
+def find_cuisine_by_dish(dish):
+    dish = dish.lower()
+    cur = conn.cursor()
+    cur.execute(
+        "select c.name_cus from cuisine c inner join dish d on(c.id_cus = d.id_cus_d) where lower(d.name_dish) LIKE '%" + str(
+            dish) + "%';")
+    cuisine = cur.fetchone()
+    cur.close
+    return cuisine[0] + " кухня"
+
+
 def close_connection():
     conn.close()
