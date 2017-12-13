@@ -70,5 +70,11 @@ def select_all_fav(user_id):
     cur.close()
     return favs
 
+def delete_all_fav(user_id):
+    cur = conn.cursor()
+    cur.execute("delete from favorite where user_id = %s", [user_id])
+    conn.commit()
+    cur.close()
+
 def close_connection():
     conn.close()

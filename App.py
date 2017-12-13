@@ -5,7 +5,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 
 import DBqueries
 
-
 gmaps = googlemaps.Client(key='AIzaSyDXNQpAsqsaii_Xxvu5tRf6dfHSasLl1WI')
 conn = None
 
@@ -23,14 +22,21 @@ def start(bot, update):
 
 
 def favorite(bot, update):
-    update.message.reply_text('Here are your favorite places!')
     favs = DBqueries.select_all_fav(update.message.from_user.id)
+    if len(favs) <= 0:
+        update.message.reply_text("You have no favorite places! :(")
+        return
+
+    update.message.reply_text('Here are your favorite places!')
     result = "List of favorites:\n\n"
     for each in favs:
         result += "⭐️ " + each[0] + "\n\n"
     update.message.reply_text(result)
 
-    
+
+def delete_all_fav(bot, update):
+    DBqueries.delete_all_fav(update.message.from_user.id)
+
 
 def update_location(bot, update):
     update.message.reply_text('We are going to reset your location!')
@@ -41,7 +47,10 @@ def update_location(bot, update):
 def help(bot, update):
     update.message.reply_text('Hi! I am UNEATABLEBOT. I will help you to find a cafe or restaurant. '
                               'You just need to send me your location and dish or cuisine which you want! Have a nice time')
-    update.message.reply_text('Send /location to change your current location!\nSend /favorite to see your favorite places!')
+    update.message.reply_text(
+        'Send /location to change your current location!\n'
+        'Send /favorite to see your favorite places!\n'
+        'Send /delete_all_favorite to clean list of your favorite places!')
 
 
 def location(bot, update):
@@ -103,13 +112,14 @@ def places(bot, update):
     for each in list_of_places:
         if list_of_favs.__contains__(each[0]):
             result += "🍴 ⭐️" + each[0] + " | " + each[1] + " | " + each[2] + "\n\n"
-        else: result += "🍴  " + each[0] + " | " + each[1] + " | " + each[2] + "\n\n"
+        else:
+            result += "🍴  " + each[0] + " | " + each[1] + " | " + each[2] + "\n\n"
 
     update.message.reply_text(result)
     update.message.reply_text('Have a nice meal! 🍴')
 
     list_of_buttons = []
-    for i in range(0,len(list_of_places)):
+    for i in range(0, len(list_of_places)):
         list_of_buttons.append([InlineKeyboardButton(list_of_places[i][0], callback_data=list_of_places[i][0])])
 
     reply_markup = InlineKeyboardMarkup(list_of_buttons)
@@ -118,7 +128,7 @@ def places(bot, update):
 
 def button(bot, update):
     query = update.callback_query
-    DBqueries.add_fav(query['message']['chat']['id'],query['data'])
+    DBqueries.add_fav(query['message']['chat']['id'], query['data'])
 
 
 def main():
@@ -129,6 +139,7 @@ def main():
     dp = updater.dispatcher
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("delete_all_favorite", delete_all_fav))
     dp.add_handler(CommandHandler("favorite", favorite))
     dp.add_handler(CommandHandler("location", update_location))
     dp.add_handler(CommandHandler("help", help))
