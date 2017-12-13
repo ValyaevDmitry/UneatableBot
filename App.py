@@ -24,7 +24,12 @@ def start(bot, update):
 def favorite(bot, update):
     update.message.reply_text('Here are your favorite places!')
     favs = DBqueries.select_fav(update.message.from_user.id)
-    print(favs)
+    result = "List of favorites:\n\n"
+    for each in favs:
+        result += "⭐️ " + each[0] + "\n\n"
+    update.message.reply_text(result)
+
+    
 
 def update_location(bot, update):
     update.message.reply_text('We are going to reset your location!')
