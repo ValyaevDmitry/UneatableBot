@@ -23,7 +23,7 @@ def start(bot, update):
 
 def favorite(bot, update):
     update.message.reply_text('Here are your favorite places!')
-    favs = DBqueries.select_fav(update.message.from_user.id)
+    favs = DBqueries.select_all_fav(update.message.from_user.id)
     result = "List of favorites:\n\n"
     for each in favs:
         result += "⭐️ " + each[0] + "\n\n"
@@ -92,8 +92,15 @@ def places(bot, update):
     list_of_places.sort(key=lambda x: x[2])
     list_of_places = list_of_places[:5]
     result = "List of restaurants:\n\n"
+    favs = DBqueries.select_all_fav(user_id)
+    list_of_favs = []
+    for each in favs:
+        list_of_favs.append(each[0])
+
     for each in list_of_places:
-        result += "🍴 " + each[0] + " | " + each[1] + " | " + each[2] + "\n\n"
+        if list_of_favs.__contains__(each[0]):
+            result += "🍴 ⭐️" + each[0] + " | " + each[1] + " | " + each[2] + "\n\n"
+        else: result += "🍴  " + each[0] + " | " + each[1] + " | " + each[2] + "\n\n"
 
     update.message.reply_text(result)
     update.message.reply_text('Have a nice meal! 🍴')

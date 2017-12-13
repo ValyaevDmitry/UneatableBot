@@ -63,7 +63,7 @@ def find_cuisine_by_dish(dish):
         return None
     return cuisine[0] + " кухня"
 
-def select_fav(user_id):
+def select_all_fav(user_id):
     cur = conn.cursor()
     cur.execute("select place from favorite where user_id = %s", [user_id])
     favs = cur.fetchall()
