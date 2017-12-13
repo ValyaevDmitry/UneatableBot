@@ -1,4 +1,5 @@
 import googlemaps
+import os
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 
@@ -38,7 +39,9 @@ def update_location(bot, update):
 
 
 def help(bot, update):
-    update.message.reply_text('Send /location to change your current location!')
+    update.message.reply_text('Hi! I am UNEATABLEBOT. I will help you to find a cafe or restaurant. '
+                              'You just need to send me your location and dish or cuisine which you want! Have a nice time')
+    update.message.reply_text('Send /location to change your current location!\nSend /favorite to see your favorite places!')
 
 
 def location(bot, update):
@@ -110,7 +113,7 @@ def places(bot, update):
         list_of_buttons.append([InlineKeyboardButton(list_of_places[i][0], callback_data=list_of_places[i][0])])
 
     reply_markup = InlineKeyboardMarkup(list_of_buttons)
-    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+    update.message.reply_text('Please choose place if you like it:', reply_markup=reply_markup)
 
 
 def button(bot, update):
@@ -120,7 +123,7 @@ def button(bot, update):
 
 def main():
     token = "467258132:AAHgTwdqU1LXxorqaluE0YqNAqzq2_p-WFo"
-    # port = int(os.environ.get('PORT', '5000'))
+    port = int(os.environ.get('PORT', '5000'))
     updater = Updater(token)
 
     dp = updater.dispatcher
@@ -131,12 +134,12 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(MessageHandler(Filters.text, places))
     dp.add_handler(MessageHandler(Filters.location, location))
-    # updater.start_webhook(listen="0.0.0.0",
-    #                       port=port,
-    #                       url_path=token)
+    updater.start_webhook(listen="0.0.0.0",
+                          port=port,
+                          url_path=token)
 
-    # updater.bot.set_webhook("https://uneatable.herokuapp.com/" + token)
-    updater.start_polling()
+    updater.bot.set_webhook("https://uneatable.herokuapp.com/" + token)
+    # updater.start_polling()
     updater.idle()
 
 
