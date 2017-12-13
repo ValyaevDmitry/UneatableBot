@@ -36,6 +36,13 @@ def update_user(user_id, lat, long):
     cur.close()
 
 
+def add_fav(user_id, place):
+    cur = conn.cursor()
+    cur.execute("insert into favorite values(%s, %s)", (user_id, place))
+    conn.commit()
+    cur.close()
+
+
 def select_emoji(emoji):
     cur = conn.cursor()
     cur.execute("select description from emojis where emoji = %s", (emoji))
@@ -56,6 +63,12 @@ def find_cuisine_by_dish(dish):
         return None
     return cuisine[0] + " кухня"
 
+def select_fav(user_id):
+    cur = conn.cursor()
+    cur.execute("select place from favorite where user_id = %s", [user_id])
+    favs = cur.fetchall()
+    cur.close()
+    return favs
 
 def close_connection():
     conn.close()
